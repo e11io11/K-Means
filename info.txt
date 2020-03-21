@@ -14,5 +14,3 @@ Kmeans(K, R){
 *1- nb d'iteration max
  2- aucun changement dans les clusters
  3- difference de distance entre les centroides faible
-
-on pourras definir les cluster comme un objet contenant un tableau de points et un centroides

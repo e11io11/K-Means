@@ -10,8 +10,12 @@ class Donnees(private val valeurs: Array[Double], private val classe: String){
     sqrt(res)
   }
 
+  def getClasse(): String = {
+    this.classe
+  }
+
   def getValeur(i: Int): Double = {
-    valeurs(i)
+    this.valeurs(i)
   }
 
   def getValeurs(): Array[Double] = {

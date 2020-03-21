@@ -2,11 +2,12 @@ import scala.io.Source
 import scala.math.pow
 import scala.math.sqrt
 import scala.util.Random.nextInt
+import scala.collection.mutable.Map
 
 class Kmeans(){
     private var matriceDonnees: MatriceDonnees = _
 
-    def initMatriceDonnees(f ng): Unit={
+    def initMatriceDonnees(file: String): Unit={
         var m : Array[Donnees] = Array()
         for (line <- Source.fromFile(file).getLines) {
             val arr = line.split(",")
@@ -28,7 +29,7 @@ class Kmeans(){
             clusters = clusters :+ new Cluster(new Donnees(centroide, ""))
         }
         var count = 0
-        while (count<10) {
+        while (count<1000) {
             //println("ITERATION : "+count)
             for (cluster <- clusters) cluster.resetIndiceDonnees
             for (i <- 0 until m) {
@@ -104,6 +105,51 @@ class Kmeans(){
     def calculerEcartType(i: Int): Double = {
         sqrt(calculerVariance(i))
     }
+
+
+    def comparerResultats(res: Array[Int]): Unit = {
+        val n = res.length
+        val distinctClasses = this.matriceDonnees.getClasses.distinct
+        val clusterId: Array[Int] = res.distinct
+        //ClusterData va contenir le nombre d'éléments de chaque classes dans chaque clusters
+        var clusterData: Map[Int, Map[String, Int]] = Map()
+        //ClusterSize va contenir le nombre d'éléments total de chaque clusters
+        var clusterSize: Map[Int, Int] = Map()
+
+        for (id <- clusterId) {
+            //On construit clusterData
+            var m: Map[String, Int] = Map()
+            for (classeName <- distinctClasses) {
+                m += (classeName -> 0)
+            }
+            clusterData += (id -> m)
+
+            //On construit clusterSize
+            clusterSize += (id -> 0)
+        }
+
+        //On parcours la matrice pour remplir clusterData et clusterSize 
+        for(i <- 0 until n) {
+            //On remplit clusterSize
+            clusterSize(res(i)) = clusterSize(res(i)) + 1
+            //On remplit clusterData
+            val donnees = getDonnees(i)
+            clusterData(res(i))(donnees.getClasse) += 1
+            //println(s"cluster ${res(i)} ${donnees.getClasse} = ${clusterData(res(i))(donnees.getClasse)}")
+        }
+
+
+        //Calcul et affichage des pourcentages d'apparition de chaque classe pour chaque clusters
+        for((cluster, data) <- clusterData) {
+            println(s"\nCluster numéro $cluster contient :")
+            for((classe, n) <- data) {
+                val pourcent = (n/clusterSize(cluster).toDouble)*100
+                println(s"${pourcent}% de $classe")
+            }
+        }     
+    }
+
+    
 
     def afficherStats(): Unit = {
         println("STATISTIQUES :")
