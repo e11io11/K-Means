@@ -14,9 +14,10 @@ object Test{
         println(k.calculerVariance(0))
         println(k.calculerEcartType(0))
         */
-
+        //println(k.getDonnees(0).calculerDistance(k.getDonnees(1)))
         //k.afficherStats()
-
-        println("["+k.calculerKmeans(3).mkString(", ")+"]")
+        val res = k.calculerKmeans(4)
+        println("["+res.mkString(", ")+"]")
+        k.comparerResultats(res)
     }
 }
