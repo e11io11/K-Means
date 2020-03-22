@@ -31,5 +31,6 @@ class Donnees(private val valeurs: Array[Double], private val classe: String){
     var str = "Valeurs: "
     for (value <- this.valeurs) str += value.toString + " "
     str + "Classe: "+this.classe
+    //test
   }
 }
