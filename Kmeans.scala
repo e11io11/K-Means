@@ -30,17 +30,14 @@ class Kmeans(){
         }
         var count = 0
         while (count<1000) {
-            //println("ITERATION : "+count)
             for (cluster <- clusters) cluster.resetIndiceDonnees
             for (i <- 0 until m) {
                 var distances: Array[Double] = Array()
                 for (j <- 0 until k) {
-                    //println("k = "+j+" distance = "+this.matriceDonnees.getDonnees(i).calculerDistance(clusters(j).getCentroide))
                     distances = distances :+ this.matriceDonnees.getDonnees(i).calculerDistance(clusters(j).getCentroide)                    
                 }
                 clusters(indiceMin(distances)).ajouterIndice(i)
             }
-            //for(cluster <- clusters) println("\n"+cluster.getIndiceDonnees.mkString(" "))
             //updating centroides
             for (i <- 0 until k) {
                 var centroide: Array[Double] = Array()
@@ -107,6 +104,21 @@ class Kmeans(){
     }
 
 
+    def calculerCovariance(i: Int, j: Int): Double = {
+        val moyenneI = calculerMoyenne(i)
+        val moyenneJ = calculerMoyenne(j)
+        val n = this.matriceDonnees.getLength
+        var res: Double = 0
+        for (k <- 0 until n) res += (this.getDonnees(k).getValeur(i) - moyenneI)*(this.getDonnees(k).getValeur(j) - moyenneJ)
+        res/n
+    }
+
+
+    def calculerCoeffCorrelation(i: Int, j: Int): Double = {
+        calculerCovariance(i, j)/(calculerEcartType(i)*calculerEcartType(j))
+    }
+
+
     def comparerResultats(res: Array[Int]): Unit = {
         val n = res.length
         val distinctClasses = this.matriceDonnees.getClasses.distinct
@@ -159,6 +171,12 @@ class Kmeans(){
             println("moyenne = "+calculerMoyenne(i))
             println("variance = "+calculerVariance(i))
             println("ecart type = "+calculerEcartType(i))
+        }
+        println("")
+        for (i <- 0 until n) {
+            for (j <- i+1 until n) {
+                println(s"coefficient de correlation des variable ${i+1} et ${j+1} = ${calculerCoeffCorrelation(i, j)}")
+            }
         }
     }
     
