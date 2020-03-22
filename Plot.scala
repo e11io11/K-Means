@@ -24,14 +24,14 @@ class Plot (val var1: Int, val var2: Int, val kmeans: Kmeans) extends JFrame{
             dataset.addSeries(centroide)
 
             //ajout des donnees du cluster i
-            var donnees = new XYSeries(s"Donnees du cluster $i")
+            var donnees = new XYSeries(s"données du cluster $i")
             for (j <- clusters(i).getIndiceDonnees) {
                 donnees.add(kmeans.getDonnees(j).getValeur(var1), kmeans.getDonnees(j).getValeur(var2))
             }
             dataset.addSeries(donnees)
         }
 
-        var chart = ChartFactory.createScatterPlot("K-Means", s"Variable $var1", s"Variable $var2", dataset)
+        var chart = ChartFactory.createScatterPlot("K-Means", s"Variable ${var1+1}", s"Variable ${var2+1}", dataset)
         var panel = new ChartPanel(chart)
 
         this.setContentPane(panel)

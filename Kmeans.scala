@@ -108,6 +108,7 @@ class Kmeans(){
         println(this.matriceDonnees)
     }
 
+    //Pour les fonction suivantes, i correspond a l'indice du groupe de variable sur lequel on veux effectuer les calcul
     def calculerMoyenne(i: Int): Double = {
         var res: Double = 0
         for (j <- 0 until this.matriceDonnees.getLength) res += this.matriceDonnees.getDonnees(j).getValeur(i)
@@ -197,7 +198,7 @@ class Kmeans(){
         println("")
         for (i <- 0 until n) {
             for (j <- i+1 until n) {
-                println(s"coefficient de correlation des variable ${i+1} et ${j+1} = ${calculerCoeffCorrelation(i, j)}")
+                println(s"coefficient de correlation des variables ${i+1} et ${j+1} = ${calculerCoeffCorrelation(i, j)}")
             }
         }
     }
