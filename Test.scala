@@ -15,11 +15,11 @@ object Test{
         println(k.calculerEcartType(0))
         */
         //println(k.getDonnees(0).calculerDistance(k.getDonnees(1)))
-        k.afficherStats()
-        /*
-        val res = k.calculerKmeans(4)
+        //k.afficherStats()
+        
+        val res = k.calculerKmeans(3)
         println("["+res.mkString(", ")+"]")
         k.comparerResultats(res)
-        */
+        
     }
 }

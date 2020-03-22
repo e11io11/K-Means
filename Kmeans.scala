@@ -11,6 +11,7 @@ class Kmeans(){
         var m : Array[Donnees] = Array()
         for (line <- Source.fromFile(file).getLines) {
             val arr = line.split(",")
+            //on cree un objet donnee avec les valeurs numerique et la classe
             m = m :+ new Donnees(arr.dropRight(1).map(_.toDouble), arr(arr.length-1))
         }
         this.matriceDonnees = new MatriceDonnees(m)
@@ -18,31 +19,42 @@ class Kmeans(){
 
 
     def calculerKmeans(k: Int): Array[Int] = {
-        var clusters: Array[Cluster] = Array()
+        // n = nombre de variables d'une ligne de donnees; m = nombre de lignes de donnees
         val n = this.matriceDonnees.getDonnees(0).getLength()
         val m = this.matriceDonnees.getLength()
+
+        //creation des clusters et centroides
+        var clusters: Array[Cluster] = Array()
         for (i <- 0 until k) {
             var centroide: Array[Double] = Array()
             for (j <- 0 until n) {
+                //on prend aleatoirement une valeur dans la matrice
                 centroide = centroide :+ this.matriceDonnees.getDonnees(nextInt(m)).getValeur(j)
             }
             clusters = clusters :+ new Cluster(new Donnees(centroide, ""))
         }
+
         var count = 0
         while (count<1000) {
+            //on vide les clusters de leur donnees
             for (cluster <- clusters) cluster.resetIndiceDonnees
+
+            //affectation des donnees aux clusters en fonction de leur distance au centroide
             for (i <- 0 until m) {
+                //on calcul la distance d'une donnees a chaque centroide, puis determine la plus petite
                 var distances: Array[Double] = Array()
                 for (j <- 0 until k) {
                     distances = distances :+ this.matriceDonnees.getDonnees(i).calculerDistance(clusters(j).getCentroide)                    
                 }
                 clusters(indiceMin(distances)).ajouterIndice(i)
             }
-            //updating centroides
+
+            //mise a jour des centroides
             for (i <- 0 until k) {
                 var centroide: Array[Double] = Array()
                 var clusterData = clusters(i).getIndiceDonnees
-                if (clusterData.length > 0) {
+                if (clusterData.length > 0) {  //on regarde si le cluster n'est pas vide
+                    //on calcule la moyenne des donnees du cluster pour chaques variables
                     for (j <- 0 until n) {
                         var moyenne: Double = 0
                         for (indice <- clusterData) moyenne += this.matriceDonnees.getDonnees(indice).getValeur(j)
@@ -53,6 +65,12 @@ class Kmeans(){
             }
             count+=1
         }
+
+        //affichage
+        var affichage = new Plot(2, 3, this)
+        affichage.afficher(clusters)
+
+        //construction du tableau resultat
         var res: Array[Int] = Array()
         for (i <- 0 until m) {
             var j=0
@@ -61,7 +79,7 @@ class Kmeans(){
             }
             res :+= j
         }
-
+        //la case i de res contient le numero du cluster auquel la donnee d'indice i appartient
         res   
     } 
 
@@ -76,6 +94,10 @@ class Kmeans(){
             }
         }
         imin
+    }
+
+    def getMatriceDonnees(): MatriceDonnees = {
+        this.matriceDonnees
     }
 
     def getDonnees(i: Int): Donnees = {
